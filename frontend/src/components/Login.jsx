@@ -92,7 +92,6 @@ const Login = () => {
                                 required
                             />
                         </div>
-
                         <button disabled={loading} type="submit" className="btn btn-primary">
                             {loading ? "Loading..." : "Login"}
                         </button>

@@ -16,7 +16,10 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Dashboard from "./Dashboard";
 import AdminDashboard from "./AdminDashboard";
+import StudentDetails from "./StudentDetails";
+import AdminDetails from "./AdminDetails"; 
 import ApplicationForm from "./ApplicationForm";
+
 
 function App() {
   const { currentUser, setCurrentUser } = useAuth();
@@ -54,6 +57,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/Admindashboard" element={<AdminDashboard />} />
           <Route path="/content-admin" element={<ContentAdmin />} />
+          <Route path="/user/:id" element={<StudentDetails />} />
+          <Route path="/admin/:id" element={<AdminDetails />} />
           <Route path="/ApplicationForm" element={<ApplicationForm />} />
           {/* New Routes for Content Admin Actions */}
           <Route path="/content-admin/add-form/:courseId" element={<ContentAdminForm />} />

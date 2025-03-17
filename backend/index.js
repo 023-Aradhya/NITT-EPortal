@@ -167,31 +167,62 @@ app.post("/login", async (req, res) => {
 });
 
 // Route: Admin Adds a Course
-app.post("/api/newCourse", authenticate, authorizeAdmin, async (req, res) => {
-  const { title, description, duration, fee, details, contact, requirement, contentAdmins } = req.body;
 
-  if (!title || !description || !duration || !fee) {
+const generateRandomPassword = () => {
+  return Math.random().toString(36).slice(-8); // Generates an 8-character password
+};
+
+app.post("/api/newCourse", authenticate, authorizeAdmin, async (req, res) => {
+  const { title, description, contentAdminName,contentAdminEmail} = req.body;
+
+  if (!title || !description|| !contentAdminName|| !contentAdminEmail  ) {
     return res.status(400).json({ message: "All fields are required" });
   }
-
+  
   try {
+
+    let contentAdmin = await UserModel.findOne({ email:contentAdminEmail });
+    
+    const generatedPassword = generateRandomPassword();
+    const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+    
+    if (!contentAdmin) {
+      
+      contentAdmin = new UserModel({
+        name:contentAdminName,
+        email:contentAdminEmail,
+        password: hashedPassword,
+        role: "content_admin",
+      });
+      await contentAdmin.save();
+    }
+
     const newCourse = new CourseModel({
       title,
       description,
-      duration,
-      fee,
-      details,
-      contact,
-      requirement,
-      contentAdmins, // Assign content admins when creating the course
+      contentAdmins:[contentAdmin._id], // Assign content admins when creating the course
     });
 
     await newCourse.save();
+    
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: contentAdminEmail,
+      subject: "Your Content Admin Credentials",
+      text: `Hello ,${contentAdminName}\n\nYou have been assigned as the content admin for the course: "${title}".\n\nYour login credentials:\nEmail: ${contentAdminEmail}\nPassword: ${generatedPassword}\n\nPlease change your password after logging in.\n\nBest Regards,\nAdmin Team`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+        return res.status(500).json({ message: "Error sending email", error });
+      }
+      console.log("Email sent:", info.response);
+    });
 
     res.status(201).json({
       message: "Course added successfully",
-      courseId: newCourse._id,
-      course: newCourse,
+      newCourse
     });
   } catch (error) {
     res.status(500).json({ message: "Error adding course", error: error.message });
@@ -245,8 +276,8 @@ app.get("/api/users/:id", authenticate, async (req, res) => {
   console.log(`Fetching user ${id} - Requested by ${req.user.userId} (Role: ${req.user.role})`);
 
   try {
-    if (req.user.role === "admin" || req.user.userId === id) {
-      const user = await FormDataModel.findById(id);
+    if (req.user.role === "content_admin" || req.user.userId === id) {
+      const user = await UserModel.findById(id);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
