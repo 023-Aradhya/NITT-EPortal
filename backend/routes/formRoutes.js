@@ -6,7 +6,7 @@ const Course = require("../models/Course");
 const { auth, authorize } = require("../middleware/auth");
 const { body, validationResult } = require("express-validator");
 
-// ✅ Save or update form structure (Only Content Admin)
+// Save or update form structure (Only Content Admin)
 router.post(
   "/save-form-structure", // Relative to /api/forms
   auth,
@@ -56,7 +56,7 @@ router.post(
   }
 );
 
-// ✅ Get form structure for students
+// Get form structure for students
 router.get("/get-form-structure/:courseId", async (req, res) => {
   try {
     const { courseId } = req.params;
@@ -119,7 +119,7 @@ router.post(
   }
 );
 
-// ✅ Get submitted application for a student
+// Get submitted application for a student
 router.get("/get-application/:studentId/:courseId", auth, async (req, res) => {
   try {
     const { studentId, courseId } = req.params;
@@ -143,7 +143,7 @@ router.get("/get-application/:studentId/:courseId", auth, async (req, res) => {
   }
 });
 
-// ✅ Update course description (Only Content Admin)
+//  Update course description (Only Content Admin)
 router.put(
   "/update-course/:courseId", // Relative to /api/forms
   auth,
