@@ -7,8 +7,8 @@ import Register from "./Register";
 import Courses from "./courses";
 import DataScience from "./DataScience";
 import ContentAdmin from "./ContentAdmin";
-import ContentAdminForm from "./contentAdminForm"; // New form component
-import ContentAdminDescription from "./ContentAdminDescription"; // New description component
+import ContentAdminForm from "./contentAdminForm"; 
+import ContentAdminDescription from "./ContentAdminDescription"; 
 import Contact from "./Contact";
 import About from "./About";
 import NewCourse from "./NewCourse";
