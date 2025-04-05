@@ -16,6 +16,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Dashboard from "./Dashboard";
 import AdminDashboard from "./AdminDashboard";
+import Description from "./Description"
 import StudentDetails from "./StudentDetails";
 import AdminDetails from "./AdminDetails"; 
 import ApplicationForm from "./ApplicationForm";
@@ -54,6 +55,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
           <Route path="/add-course" element={<NewCourse />} />
+          <Route path="/courses/:courseId" element = {<Description />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/Admindashboard" element={<AdminDashboard />} />
           <Route path="/content-admin" element={<ContentAdmin />} />

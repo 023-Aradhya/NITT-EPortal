@@ -6,12 +6,16 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 const UserModel = require("./models/User");
+const {body , validationResult} = require("express-validator");
 const CourseModel = require("./models/Course");
 const ApplicationForm = require("./models/ApplicationForm");
 const FormModel = require("./models/Form"); 
 const formRoutes = require("./routes/formRoutes");
 const app = express();
-app.use(express.json());
+
+
+app.use(express.json({limit: "10mb"}));
+app.use(express.urlencoded({limit : "10mb" , extended: true}));
 app.use(
   cors({
     origin: "http://localhost:5173",  // Allow frontend access
@@ -349,7 +353,61 @@ app.get("/api/application/:id", authenticate, async (req, res) => {
   }
 });
 
+ app.post("/api/courses/:courseId/add-description", authenticate, authorizeContentAdmin, async (req, res) => {
+   const { courseId } = req.params;
+   const {
+     programDescription,
+     image1,
+     image2,
+     vision,
+     mission,
+     yearsOfDepartment,
+     syllabus,
+     programEducationalObjectives,
+     programOutcomes,
+   } = req.body;
+   console.log("Received data:", req.body); // Log the received data
+   // Validate required fields
+   if (
+     !programDescription ||
+     !image1 ||
+     !image2 ||
+     !vision ||
+     !mission ||
+     !yearsOfDepartment ||
+     !syllabus ||
+     !programEducationalObjectives ||
+     !programOutcomes
+   ) {
+     return res.status(400).json({ message: "All fields are required" });
+   }
 
+   try {
+     // Find the course by ID
+     const course = await CourseModel.findById(courseId);
+     if (!course) {
+       return res.status(404).json({ message: "Course not found" });
+     }
+
+     // Update the course with the new description
+     course.programDescription = programDescription;
+     course.image1 = image1;
+     course.image2 = image2;
+     course.vision = vision;
+     course.mission = mission;
+     course.yearsOfDepartment = yearsOfDepartment;
+     course.syllabus = syllabus;
+     course.programEducationalObjectives = programEducationalObjectives;
+     course.programOutcomes = programOutcomes;
+     console.log("Updated course:", course);  //Log the updated course
+     await course.save();
+
+     res.status(200).json({ message: "Course description added successfully!", course });
+   } catch (error) {
+     console.error("Error adding course description:", error);
+     res.status(500).json({ message: "Error adding course description", error: error.message });
+   }
+ });
 // Route: Delete Application (Admin Only)
 app.delete("/api/application/:id", authenticate, authorizeAdmin, async (req, res) => {
   const { id } = req.params;

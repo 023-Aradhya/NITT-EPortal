@@ -8,6 +8,8 @@ const NewCourse = () => {
     description: "",
     contentAdminName: "", 
     contentAdminEmail: "",  // Content admin email field
+    counsellingOfficerName:"",
+    counsellingOfficerEmail:"",
     //contentAdminPassword: "" // Content admin password field
   });
 
@@ -46,6 +48,8 @@ const NewCourse = () => {
       description: courseData.description,
       contentAdminName: courseData.contentAdminName,
       contentAdminEmail: courseData.contentAdminEmail,
+      counsellingOfficerName: courseData.counsellingOfficerName,
+      counsellingOfficerEmail: courseData.counsellingOfficernEmail,
       //contentAdminPassword: courseData.contentAdminPassword,
     };
     
@@ -84,6 +88,8 @@ const NewCourse = () => {
         <h3>Assign Content Admin</h3>
         <input type="text" name="contentAdminName" placeholder="Content Admin Name" value={courseData.contentAdminName} onChange={handleChange} required />
         <input type="email" name="contentAdminEmail" placeholder="Content Admin Email" value={courseData.contentAdminEmail} onChange={handleChange} required />
+        <input type="text" name="counsellingOfficerName" placeholder="Counselling Officer Name" value={courseData.counsellingOfficerName} onChange={handleChange} required />
+        <input type="email" name="counsellingOfficerEmail" placeholder="Counselling Officer Email" value={courseData.counsellingOfficerEmail} onChange={handleChange} required />
         <button type="submit">Add Course</button>
       </form>
     </div>
